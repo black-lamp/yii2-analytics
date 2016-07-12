@@ -8,7 +8,7 @@ namespace bl\analytics;
 interface AnalyticsInterface
 {
     /** @var string Api version */
-    public $v = '1';
+    public $v = 1;
 
     /** @var string Tracking ID / Property ID. */
     public $tid;
