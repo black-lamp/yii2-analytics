@@ -1,9 +1,8 @@
 <?php
 namespace bl\analytics\event;
-use bl\analytics\Analytics;
-use bl\analytics\AnalyticsInterface;
-use frontend\assets\AnalyticsAsset;
+use bl\analytics\BaseAnalytics;
 use yii\base\Object;
+use yii\helpers\ArrayHelper;
 use yii\httpclient\Client;
 
 /**
@@ -17,20 +16,32 @@ use yii\httpclient\Client;
  *
  * @author Ruslan Saiko <ruslan.saiko.dev@gmail.com>
  */
-class Event extends Object implements AnalyticsInterface
+class Event extends BaseAnalytics
 {
 
     /** @var string Api URL */
-    public $baseUrl = 'http://www.google-analytics.com';
+    public $baseUrl = 'https://ssl.google-analytics.com/collect';
+
+    public function __construct($v, $cid, $tid, array $config = null)
+    {
+        parent::__construct($config);
+
+        $this->tid = $tid;
+        $this->v = $v;
+        $this->cid = $cid;
+    }
+
 
     /** @var \yii\httpclient\Client */
     protected $_httpClient = null;
+
     public function init()
     {
         parent::init();
-        $this->_httpClient = \Yii::createObject('\yii\httpclient\Client', [
-            'baseUrl' => $this->baseUrl
-        ]);
+
+        $this->_httpClient = new Client();
+
+        $this->_httpClient->baseUrl = $this->baseUrl;
     }
 
 
@@ -48,16 +59,13 @@ class Event extends Object implements AnalyticsInterface
      */
     public function send($data)
     {
+        $v = $this->v;
+        $cid = $this->cid;
+        $tid = $this->tid;
         $response = $this->_httpClient->createRequest()
             ->setMethod('post')
             ->setUrl('collect')
-            ->setData($data)
+            ->setData(ArrayHelper::merge($data, compact('v','tid','cid')))
             ->send();
-
-        if ($response->isOk) {
-            die(var_dump($response->data));
-        }
-        die(var_dump($response->data));
-
     }
 }
