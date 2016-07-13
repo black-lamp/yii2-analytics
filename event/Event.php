@@ -7,7 +7,6 @@ use yii\httpclient\Client;
 
 /**
  * \Yii::$app->analytics->event->send([
- *      't' => 'event',     // Event hit type.
  *      'ec' => 'video',    // Event Category. Required.
  *      'ea' => 'play',     // Event Action. Required.
  *      'el' => 'holiday',  // Event label.
@@ -49,7 +48,6 @@ class Event extends BaseAnalytics
      * $event = \Yii::createObject('\bl\analytics\event\Event', ['v' => 1, 'tid' => 'UA-XXXXX-Y', 'cid' => 555]);
      *
      * $event->send([
-     *      't' => 'event',     // Event hit type.
      *      'ec' => 'video',    // Event Category. Required.
      *      'ea' => 'play',     // Event Action. Required.
      *      'el' => 'holiday',  // Event label.
@@ -62,10 +60,11 @@ class Event extends BaseAnalytics
         $v = $this->v;
         $cid = $this->cid;
         $tid = $this->tid;
+        $t = 'event';
         $response = $this->_httpClient->createRequest()
             ->setMethod('post')
             ->setUrl('collect')
-            ->setData(ArrayHelper::merge($data, compact('v','tid','cid')))
+            ->setData(ArrayHelper::merge($data, compact('v','tid','cid', 't')))
             ->send();
     }
 }
