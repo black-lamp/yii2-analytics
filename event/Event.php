@@ -65,7 +65,7 @@ class Event extends BaseAnalytics
         $response = $this->_httpClient->createRequest()
             ->setMethod('post')
             ->setUrl('collect')
-            ->setData(ArrayHelper::merge($data, compact('v', 'tid', 'cid', 't')))
+            ->setData(ArrayHelper::merge($data, compact('v','tid','cid', 't')))
             ->send();
 
     }
